@@ -18,6 +18,8 @@
     <string name="send">Send</string>
 
     <string name="choose_header_color">Choose header color</string>
+    <string name="settings">Settings</string>
+    <string name="header_color">Header color</string>
 
 
 </resources>
