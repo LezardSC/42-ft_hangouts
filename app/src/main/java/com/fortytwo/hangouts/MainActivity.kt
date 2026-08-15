@@ -23,6 +23,14 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.buttonAddContact).setOnClickListener {
             startActivity(Intent(this, ContactFormActivity::class.java))
         }
+
+        listView.setOnItemLongClickListener { _, _, position, _ ->
+            val contact = adapter.getItem(position) ?: return@setOnItemLongClickListener false
+            startActivity(Intent(this, ContactFormActivity::class.java).apply {
+                putExtra(EXTRA_CONTACT_ID, contact.id)
+            })
+            true
+        }
     }
 
     override fun onResume() {
