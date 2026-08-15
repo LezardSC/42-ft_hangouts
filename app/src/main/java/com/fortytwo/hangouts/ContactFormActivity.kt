@@ -59,7 +59,7 @@ class ContactFormActivity: AppCompatActivity() {
         )
 
         if (editingId != -1L) {
-            db.updateContract(contact)
+            db.updateContact(contact)
         } else {
             db.insertContact(contact)
         }

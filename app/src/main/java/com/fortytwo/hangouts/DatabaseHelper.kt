@@ -44,7 +44,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DbContract.DB_
         return writableDatabase.insert(DbContract.Contacts.TABLE, null, values)
     }
 
-    fun updateContract(contact: Contact) {
+    fun updateContact(contact: Contact) {
         val values = ContentValues().apply {
             put(DbContract.Contacts.FIRST_NAME, contact.firstName)
             put(DbContract.Contacts.LAST_NAME, contact.lastName)
