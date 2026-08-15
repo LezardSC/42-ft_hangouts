@@ -1,14 +1,20 @@
 package com.fortytwo.hangouts
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var db: DatabaseHelper
     private lateinit var adapter: ContactAdapter
+
+    private val requestSmsPermissions = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +37,14 @@ class MainActivity : AppCompatActivity() {
             })
             true
         }
+
+        requestSmsPermissions.launch(
+            arrayOf(
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.RECEIVE_SMS,
+                Manifest.permission.READ_SMS,
+            )
+        )
     }
 
     override fun onResume() {
