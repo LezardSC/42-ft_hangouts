@@ -1,6 +1,9 @@
 package com.fortytwo.hangouts
 
 import android.os.Bundle
+import android.telephony.SmsManager
+import android.view.View
+import android.widget.EditText
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -21,6 +24,34 @@ class ConversationActivity: AppCompatActivity() {
         val listView = findViewById<ListView>(R.id.listMessages)
         adapter = MessageAdapter(this, emptyList())
         listView.adapter = adapter
+
+        findViewById<View>(R.id.buttonSend).setOnClickListener {
+            val input = findViewById<EditText>(R.id.inputMessage)
+            val body = input.text.toString().trim()
+            if (body.isNotEmpty()) {
+                sendMessage(body)
+                input.text.clear()
+                refresh()
+            }
+        }
+    }
+
+    private fun sendMessage(body: String) {
+        val smsManager = SmsManager.getDefault()
+        val parts = smsManager.divideMessage(body)
+        if (parts.size > 1) {
+            smsManager.sendMultipartTextMessage(contact.phoneNumber, null, parts, null, null)
+        } else {
+            smsManager.sendTextMessage(contact.phoneNumber, null, body, null, null)
+        }
+        db.insertMessage(
+            Message(
+                contactId = contact.id,
+                body = body,
+                timestamp = System.currentTimeMillis(),
+                direction = Direction.SENT
+            )
+        )
     }
 
     override fun onResume() {
