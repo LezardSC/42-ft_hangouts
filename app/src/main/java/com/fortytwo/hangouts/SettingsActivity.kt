@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var prefs: Prefs
@@ -17,6 +19,10 @@ class SettingsActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.buttonHeaderColor).setOnClickListener {
             showColorPicker()
+        }
+
+        findViewById<Button>(R.id.buttonLanguage).setOnClickListener {
+            showLanguagePicker()
         }
     }
 
@@ -32,6 +38,30 @@ class SettingsActivity : AppCompatActivity() {
             .setTitle(R.string.choose_header_color)
             .setItems(names) { _, which ->
                 prefs.headerColor = colors.getValue(names[which])
+            }.show()
+    }
+
+    private fun showLanguagePicker() {
+        val tags = linkedMapOf(
+            getString(R.string.language_system_default) to "",
+            getString(R.string.language_english) to "en",
+            getString(R.string.language_french) to "fr"
+        )
+        val names = tags.keys.toTypedArray()
+        val currentTag = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+        val currentIndex = tags.values.indexOfFirst { it == currentTag }.coerceAtLeast(0)
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.choose_language)
+            .setSingleChoiceItems(names, currentIndex) { dialog, which ->
+                val tag = tags.getValue(names[which])
+                val locales = if (tag.isEmpty()) {
+                    LocaleListCompat.getEmptyLocaleList()
+                } else {
+                    LocaleListCompat.forLanguageTags(tag)
+                }
+                AppCompatDelegate.setApplicationLocales(locales)
+                dialog.dismiss()
             }.show()
     }
 }
