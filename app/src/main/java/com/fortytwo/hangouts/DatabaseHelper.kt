@@ -21,9 +21,25 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DbContract.DB_
             )
             """.trimIndent()
         )
+
+        db.execSQL(
+            """
+            CREATE TABLE ${DbContract.Messages.TABLE} (
+                 ${DbContract.Messages.ID} INTEGER PRIMARY KEY AUTOINCREMENT,
+                ${DbContract.Messages.CONTACT_ID} INTEGER NOT NULL,
+                ${DbContract.Messages.BODY} TEXT NOT NULL,
+                ${DbContract.Messages.TIMESTAMP} INTEGER NOT NULL,
+                ${DbContract.Messages.DIRECTION} INTEGER NOT NULL,
+                FOREIGN KEY(${DbContract.Messages.CONTACT_ID})
+                    REFERENCES ${DbContract.Contacts.TABLE}(${DbContract.Contacts.ID})
+            )
+            """.trimIndent()
+        )
     }
 
+
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS ${DbContract.Messages.TABLE}")
         db.execSQL("DROP TABLE IF EXISTS ${DbContract.Contacts.TABLE}")
 
         onCreate(db)

@@ -14,4 +14,13 @@ object DbContract {
         const val NOTE = "note"
         const val PHOTO_URI = "photo_uri"
     }
+
+    object Messages {
+        const val TABLE = "messages"
+        const val ID = "_id"
+        const val CONTACT_ID = "contact_id"
+        const val BODY = "body"
+        const val TIMESTAMP = "timestamp"
+        const val DIRECTION = "direction" // 0 = sent, 1 = received
+    }
 }
