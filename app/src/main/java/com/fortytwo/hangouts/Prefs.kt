@@ -10,12 +10,12 @@ class Prefs(context: Context) {
         get() = sp.getInt(KEY_HEADER_COLOR, Color.parseColor("#2E8B84"))
         set(value) = sp.edit().putInt(KEY_HEADER_COLOR, value).apply()
 
-    var lastBackgroundAt: Long?
-        get() = sp.getLong(KEY_LAST_BACKGROUND, -1L).takeIf { it != -1L }
-        set(value) = sp.edit().putLong(KEY_LAST_BACKGROUND, value ?: -1L).apply()
+    var lastBackgroundedAt: Long?
+        get() = sp.getLong(KEY_LAST_BACKGROUNDED, -1L).takeIf { it != -1L }
+        set(value) = sp.edit().putLong(KEY_LAST_BACKGROUNDED, value ?: -1L).apply()
 
     companion object {
         private const val KEY_HEADER_COLOR = "header_color"
-        private const val KEY_LAST_BACKGROUND = "last_background"
+        private const val KEY_LAST_BACKGROUNDED = "last_backgrounded"
     }
 }
