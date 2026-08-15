@@ -2,6 +2,7 @@ package com.fortytwo.hangouts
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
@@ -66,6 +67,48 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DbContract.DB_
             arrayOf(id.toString())
         )
     }
+
+    fun getAllContacts(): List<Contact> {
+        val list = mutableListOf<Contact>()
+        readableDatabase.query(
+            DbContract.Contacts.TABLE, null, null, null, null, null, null,
+            "${DbContract.Contacts.LAST_NAME} ASC"
+        ).use { cursor ->
+            while (cursor.moveToNext()) list.add(cursor.toContact())
+        }
+        return list
+    }
+
+    fun getContact(id: Long): Contact? {
+        readableDatabase.query(
+            DbContract.Contacts.TABLE, null,
+            "${DbContract.Contacts.ID} = ?", arrayOf(id.toString()),
+            null, null, null
+        ).use { cursor ->
+            return if (cursor.moveToFirst()) cursor.toContact() else null
+        }
+    }
+
+    fun findContactByNumber(number: String): Contact? {
+        val normalized = normalizeNumber(number)
+        readableDatabase.query(
+            DbContract.Contacts.TABLE, null,
+            "${DbContract.Contacts.PHONE} = ?", arrayOf(normalized),
+            null, null, null
+        ).use { cursor ->
+            return if (cursor.moveToFirst()) cursor.toContact() else null
+        }
+    }
+
+    private fun Cursor.toContact() = Contact(
+        id = getLong(getColumnIndexOrThrow(DbContract.Contacts.ID)),
+        firstName = getString(getColumnIndexOrThrow(DbContract.Contacts.FIRST_NAME)),
+        lastName = getString(getColumnIndexOrThrow(DbContract.Contacts.LAST_NAME)),
+        phoneNumber = getString(getColumnIndexOrThrow(DbContract.Contacts.PHONE)),
+        email = getString(getColumnIndexOrThrow(DbContract.Contacts.EMAIL)),
+        note = getString(getColumnIndexOrThrow(DbContract.Contacts.NOTE)),
+        photoUri = getString(getColumnIndexOrThrow(DbContract.Contacts.PHOTO_URI)),
+    )
 
     companion object {
         fun normalizeNumber(raw: String): String = raw.filter { it.isDigit() || it == '+' }
