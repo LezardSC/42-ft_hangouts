@@ -2,12 +2,9 @@ package com.fortytwo.hangouts
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ListView
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
     private lateinit var db: DatabaseHelper
@@ -22,6 +19,10 @@ class MainActivity : AppCompatActivity() {
         val listView = findViewById<ListView>(R.id.listContacts)
         adapter = ContactAdapter(this, emptyList())
         listView.adapter = adapter
+
+        findViewById<View>(R.id.buttonAddContact).setOnClickListener {
+            startActivity(Intent(this, ContactFormActivity::class.java))
+        }
     }
 
     override fun onResume() {
