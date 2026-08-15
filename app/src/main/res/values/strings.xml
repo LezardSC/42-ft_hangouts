@@ -10,4 +10,7 @@
     <string name="delete">Delete</string>
 
     <string name="error_required_fields">Error, fields required</string>
+    <string name="delete_contact">Do you want to delete this contact?</string>
+    <string name="delete_contact_confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>
