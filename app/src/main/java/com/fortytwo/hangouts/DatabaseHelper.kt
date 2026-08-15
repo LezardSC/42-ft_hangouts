@@ -126,6 +126,42 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DbContract.DB_
         photoUri = getString(getColumnIndexOrThrow(DbContract.Contacts.PHOTO_URI)),
     )
 
+    // --- messages ---
+    fun insertMessage(message: Message): Long {
+        val values = ContentValues().apply {
+            put(DbContract.Messages.CONTACT_ID, message.contactId)
+            put(DbContract.Messages.BODY, message.body)
+            put(DbContract.Messages.TIMESTAMP, message.timestamp)
+            put(DbContract.Messages.DIRECTION, if (message.direction == Direction.SENT) 0 else 1)
+        }
+
+        return writableDatabase.insert(DbContract.Messages.TABLE, null, values)
+    }
+
+    fun getMessages(contactId: Long): List<Message> {
+        val list = mutableListOf<Message>()
+        readableDatabase.query(
+            DbContract.Messages.TABLE, null,
+            "${DbContract.Messages.CONTACT_ID} = ?", arrayOf(contactId.toString()),
+            null, null, "${DbContract.Messages.TIMESTAMP} ASC"
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                val directionCol = cursor.getColumnIndexOrThrow(DbContract.Messages.DIRECTION)
+                list.add(
+                    Message(
+                        id = cursor.getLong(cursor.getColumnIndexOrThrow(DbContract.Messages.ID)),
+                        contactId = contactId,
+                        body = cursor.getString(cursor.getColumnIndexOrThrow(DbContract.Messages.BODY)),
+                        timestamp = cursor.getLong(cursor.getColumnIndexOrThrow(DbContract.Messages.TIMESTAMP)),
+                        direction = if (cursor.getInt(directionCol) == 0) Direction.SENT else Direction.RECEIVED
+                    )
+                )
+            }
+        }
+
+        return list
+    }
+
     companion object {
         fun normalizeNumber(raw: String): String = raw.filter { it.isDigit() || it == '+' }
     }
