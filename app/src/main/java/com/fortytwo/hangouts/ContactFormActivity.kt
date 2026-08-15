@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 class ContactFormActivity: AppCompatActivity() {
     private lateinit var db: DatabaseHelper
     private var editingId: Long = -1L
+    private var editingPhotoUri: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,7 +19,10 @@ class ContactFormActivity: AppCompatActivity() {
 
         editingId = intent.getLongExtra(MainActivity.EXTRA_CONTACT_ID, -1L)
         if (editingId != -1L) {
-            db.getContact(editingId)?.let { fillForm(it) }
+            db.getContact(editingId)?.let {
+                fillForm(it)
+                editingPhotoUri = it.photoUri
+            }
             findViewById<View>(R.id.buttonDelete).visibility = View.VISIBLE
         }
 
@@ -45,14 +49,20 @@ class ContactFormActivity: AppCompatActivity() {
         }
 
         val contact = Contact(
+            id = if (editingId != -1L) editingId else 0,
             firstName = firstName,
             lastName = lastName,
             phoneNumber = phone,
             email = findViewById<EditText>(R.id.inputEmail).text.toString().trim().ifEmpty { null },
-            note = findViewById<EditText>(R.id.inputNote).text.toString().trim().ifEmpty { null }
+            note = findViewById<EditText>(R.id.inputNote).text.toString().trim().ifEmpty { null },
+            photoUri = editingPhotoUri
         )
 
-        db.insertContact(contact)
+        if (editingId != -1L) {
+            db.updateContract(contact)
+        } else {
+            db.insertContact(contact)
+        }
         finish()
     }
 
