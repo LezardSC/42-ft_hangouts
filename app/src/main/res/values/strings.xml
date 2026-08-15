@@ -16,6 +16,8 @@
 
     <string name="type_a_message">Type a message</string>
     <string name="send">Send</string>
+    <string name="call">Call</string>
+    <string name="call_permission_denied">Call permission denied, opening dialer instead</string>
 
     <string name="choose_header_color">Choose header color</string>
     <string name="settings">Settings</string>
