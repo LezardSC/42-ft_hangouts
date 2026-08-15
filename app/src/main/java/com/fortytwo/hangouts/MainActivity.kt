@@ -10,16 +10,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
-    companion object {
-        const val EXTRA_CONTACT_ID = "com.fortytwo.hangouts.EXTRA_CONTACT_ID"
-    }
-
     private lateinit var db: DatabaseHelper
     private lateinit var adapter: ContactAdapter
-
-    private val requestSmsPermissions = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,5 +22,14 @@ class MainActivity : AppCompatActivity() {
         val listView = findViewById<ListView>(R.id.listContacts)
         adapter = ContactAdapter(this, emptyList())
         listView.adapter = adapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        adapter.update(db.getAllContacts())
+    }
+
+    companion object {
+        const val EXTRA_CONTACT_ID = "extra_contact_id"
     }
 }
