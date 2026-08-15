@@ -2,7 +2,6 @@ package com.fortytwo.hangouts
 
 import android.Manifest
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
@@ -10,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
         db = DatabaseHelper(this)
         prefs = Prefs(this)
@@ -65,6 +64,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         adapter.update(db.getAllContacts())
+        applyHeaderColor()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -74,28 +74,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_header_color) {
-            showColorPicker()
+        if (item.itemId == R.id.action_settings) {
+            startActivity(Intent(this, SettingsActivity::class.java))
 
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun showColorPicker() {
-        val colors = linkedMapOf(
-            "Teal" to Color.parseColor("#2E8B84"),
-            "Indigo" to Color.parseColor("#3F51B5"),
-            "Crimson" to Color.parseColor("#B4562A"),
-            "Slate" to Color.parseColor("#1B1F27")
-        )
-        val names = colors.keys.toTypedArray()
-        AlertDialog.Builder(this)
-            .setTitle(R.string.choose_header_color)
-            .setItems(names) { _, which ->
-                prefs.headerColor = colors.getValue(names[which])
-                applyHeaderColor()
-            }.show()
     }
 
     private fun applyHeaderColor() {
