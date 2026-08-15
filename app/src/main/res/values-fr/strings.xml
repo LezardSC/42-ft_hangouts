@@ -16,6 +16,8 @@
 
     <string name="type_a_message">Écrire un message</string>
     <string name="send">Envoyer</string>
+    <string name="call">Appeler</string>
+    <string name="call_permission_denied">Permission d\'appel refusée, ouverture du composeur</string>
 
     <string name="choose_header_color">Choisir la couleur de l\'en-tête</string>
     <string name="settings">Paramètres</string>
