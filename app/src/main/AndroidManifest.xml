@@ -23,6 +23,7 @@
         </activity>
 
         <activity android:name=".ContactFormActivity" android:exported="false" />
+        <activity android:name=".ConversationActivity" android:exported="false" />
 
         <receiver
             android:name=".SmsReceiver"
@@ -33,6 +34,7 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
