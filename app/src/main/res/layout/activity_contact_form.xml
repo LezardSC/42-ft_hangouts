@@ -10,6 +10,18 @@
         android:orientation="vertical"
         android:padding="24dp" >
 
+        <ImageView
+            android:id="@+id/imageContactPhoto"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_photo_placeholder"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/contact_photo"
+            android:clickable="true"
+            android:focusable="true" />
+
         <EditText
             android:id="@+id/inputFirstName"
             android:layout_width="match_parent"
