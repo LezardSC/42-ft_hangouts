@@ -71,7 +71,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DbContract.DB_
     fun getAllContacts(): List<Contact> {
         val list = mutableListOf<Contact>()
         readableDatabase.query(
-            DbContract.Contacts.TABLE, null, null, null, null, null, null,
+            DbContract.Contacts.TABLE, null, null, null, null, null,
             "${DbContract.Contacts.LAST_NAME} ASC"
         ).use { cursor ->
             while (cursor.moveToNext()) list.add(cursor.toContact())
