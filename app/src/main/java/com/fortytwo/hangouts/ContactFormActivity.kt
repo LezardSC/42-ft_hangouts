@@ -3,7 +3,9 @@ package com.fortytwo.hangouts
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
@@ -11,6 +13,17 @@ class ContactFormActivity: AppCompatActivity() {
     private lateinit var db: DatabaseHelper
     private var editingId: Long = -1L
     private var editingPhotoUri: String? = null
+
+    private val pickPhoto = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            PhotoUtils.takePersistablePermission(this, uri)
+            PhotoUtils.releasePersistedPermission(this, editingPhotoUri)
+            editingPhotoUri = uri.toString()
+            bindPhoto()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +38,23 @@ class ContactFormActivity: AppCompatActivity() {
             }
             findViewById<View>(R.id.buttonDelete).visibility = View.VISIBLE
         }
+        savedInstanceState?.getString(KEY_PHOTO_URI)?.let { editingPhotoUri = it }
+        bindPhoto()
 
+        findViewById<View>(R.id.imageContactPhoto).setOnClickListener {
+            pickPhoto.launch(arrayOf("image/*"))
+        }
         findViewById<View>(R.id.buttonSave).setOnClickListener { save() }
         findViewById<View>(R.id.buttonDelete).setOnClickListener { confirmDelete() }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_PHOTO_URI, editingPhotoUri)
+    }
+
+    private fun bindPhoto() {
+        PhotoUtils.bindPhoto(findViewById<ImageView>(R.id.imageContactPhoto), editingPhotoUri, PHOTO_PREVIEW_SIZE)
     }
 
     private fun fillForm(contact: Contact) {
@@ -72,9 +99,15 @@ class ContactFormActivity: AppCompatActivity() {
             .setMessage(R.string.delete_contact_confirm)
             .setPositiveButton(R.string.delete) { _, _ ->
                 db.deleteContact(editingId)
+                PhotoUtils.releasePersistedPermission(this, editingPhotoUri)
                 finish()
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
+    }
+
+    companion object {
+        private const val PHOTO_PREVIEW_SIZE = 300
+        private const val KEY_PHOTO_URI = "editing_photo_uri"
     }
 }

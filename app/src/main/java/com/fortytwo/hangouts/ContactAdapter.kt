@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.TextView
 
 class ContactAdapter(
@@ -24,7 +25,12 @@ class ContactAdapter(
         val contact = getItem(position)!!
         view.findViewById<TextView>(R.id.textName).text = contact.displayName
         view.findViewById<TextView>(R.id.textNumber).text = contact.phoneNumber
+        PhotoUtils.bindPhoto(view.findViewById<ImageView>(R.id.imagePhoto), contact.photoUri, THUMBNAIL_SIZE)
 
         return view
+    }
+
+    companion object {
+        private const val THUMBNAIL_SIZE = 80
     }
 }
