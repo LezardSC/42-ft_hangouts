@@ -16,4 +16,8 @@
 
     <string name="type_a_message">Type a message</string>
     <string name="send">Send</string>
+
+    <string name="choose_header_color">Choose header color</string>
+
+
 </resources>
