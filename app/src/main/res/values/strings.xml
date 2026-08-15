@@ -8,4 +8,6 @@
     <string name="note">Note</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
+
+    <string name="error_required_fields">Error, fields required</string>
 </resources>
