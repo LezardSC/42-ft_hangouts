@@ -38,6 +38,13 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+        listView.setOnItemClickListener { _, _, position, _ ->
+            val contact = adapter.getItem(position) ?: return@setOnItemClickListener
+            startActivity(Intent(this, ConversationActivity::class.java).apply {
+                putExtra(EXTRA_CONTACT_ID, contact.id)
+            })
+        }
+
         requestSmsPermissions.launch(
             arrayOf(
                 Manifest.permission.SEND_SMS,
