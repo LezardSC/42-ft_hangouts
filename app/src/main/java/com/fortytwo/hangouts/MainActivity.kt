@@ -3,16 +3,13 @@ package com.fortytwo.hangouts
 import android.Manifest
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
-import android.icu.text.DateFormat
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ListView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import java.util.Date
 
 class MainActivity : AppCompatActivity() {
     private lateinit var db: DatabaseHelper
@@ -68,19 +65,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         adapter.update(db.getAllContacts())
         applyHeaderColor()
-        showLastBackgroundedToast()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        prefs.lastBackgroundedAt = System.currentTimeMillis()
-    }
-
-    private fun showLastBackgroundedToast() {
-        val last = prefs.lastBackgroundedAt ?: return
-        val formatted = DateFormat.getDateTimeInstance().format(Date(last))
-
-        Toast.makeText(this, getString(R.string.last_backgrounded, formatted), Toast.LENGTH_LONG).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
