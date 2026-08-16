@@ -7,27 +7,21 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ListView
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import android.widget.Toolbar
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private lateinit var db: DatabaseHelper
     private lateinit var prefs: Prefs
     private lateinit var adapter: ContactAdapter
 
-    private val requestSmsPermissions = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) {}
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setActionBar(findViewById(R.id.toolbar))
 
         db = DatabaseHelper(this)
         prefs = Prefs(this)
-        applyHeaderColor(findViewById<Toolbar>(R.id.toolbar), prefs.headerColor)
+        AppearanceUtils.applyHeaderColor(this, findViewById<Toolbar>(R.id.toolbar), prefs.headerColor)
 
         val listView = findViewById<ListView>(R.id.listContacts)
         adapter = ContactAdapter(this, emptyList())
@@ -52,19 +46,20 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        requestSmsPermissions.launch(
+        requestPermissions(
             arrayOf(
                 Manifest.permission.SEND_SMS,
                 Manifest.permission.RECEIVE_SMS,
                 Manifest.permission.READ_SMS,
-            )
+            ),
+            REQUEST_SMS_PERMISSIONS
         )
     }
 
     override fun onResume() {
         super.onResume()
         adapter.update(db.getAllContacts())
-        applyHeaderColor(findViewById<Toolbar>(R.id.toolbar), prefs.headerColor)
+        AppearanceUtils.applyHeaderColor(this, findViewById<Toolbar>(R.id.toolbar), prefs.headerColor)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -84,5 +79,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_CONTACT_ID = "extra_contact_id"
+        private const val REQUEST_SMS_PERMISSIONS = 1
     }
 }

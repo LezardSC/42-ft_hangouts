@@ -1,5 +1,7 @@
 package com.fortytwo.hangouts
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -7,27 +9,13 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import android.widget.Toolbar
 
-class ContactFormActivity: AppCompatActivity() {
+class ContactFormActivity: BaseActivity() {
     private lateinit var db: DatabaseHelper
     private lateinit var prefs: Prefs
     private var editingId: Long = -1L
     private var editingPhotoUri: String? = null
-
-    private val pickPhoto = registerForActivityResult(
-        ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        if (uri != null) {
-            PhotoUtils.takePersistablePermission(this, uri)
-            PhotoUtils.releasePersistedPermission(this, editingPhotoUri)
-            editingPhotoUri = uri.toString()
-            bindPhoto()
-        }
-    }
 
     private val nameWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -44,9 +32,9 @@ class ContactFormActivity: AppCompatActivity() {
         prefs = Prefs(this)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
-        applyHeaderColor(toolbar, prefs.headerColor)
+        AppearanceUtils.applyHeaderColor(this, toolbar, prefs.headerColor)
 
         editingId = intent.getLongExtra(MainActivity.EXTRA_CONTACT_ID, -1L)
         title = if (editingId != -1L) getString(R.string.edit_contact) else getString(R.string.add_contact)
@@ -64,10 +52,25 @@ class ContactFormActivity: AppCompatActivity() {
         findViewById<EditText>(R.id.inputLastName).addTextChangedListener(nameWatcher)
 
         findViewById<View>(R.id.imageContactPhoto).setOnClickListener {
-            pickPhoto.launch(arrayOf("image/*"))
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "image/*"
+            }
+            startActivityForResult(intent, REQUEST_PICK_PHOTO)
         }
         findViewById<View>(R.id.buttonSave).setOnClickListener { save() }
         findViewById<View>(R.id.buttonDelete).setOnClickListener { confirmDelete() }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQUEST_PICK_PHOTO || resultCode != RESULT_OK) return
+        val uri = data?.data ?: return
+
+        PhotoUtils.takePersistablePermission(this, uri)
+        PhotoUtils.releasePersistedPermission(this, editingPhotoUri)
+        editingPhotoUri = uri.toString()
+        bindPhoto()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -134,5 +137,6 @@ class ContactFormActivity: AppCompatActivity() {
     companion object {
         private const val PHOTO_PREVIEW_SIZE = 300
         private const val KEY_PHOTO_URI = "editing_photo_uri"
+        private const val REQUEST_PICK_PHOTO = 1
     }
 }

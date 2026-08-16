@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <com.google.android.material.appbar.MaterialToolbar
+    <android.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
+        android:layout_height="?android:attr/actionBarSize" />
 
     <ListView
         android:id="@+id/listMessages"
@@ -38,10 +38,13 @@
             android:hint="@string/type_a_message"
             android:maxLines="4" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/buttonSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_button_filled"
+            android:textColor="?attr/colorOnPrimary"
+            android:textAllCaps="false"
             android:text="@string/send" />
     </LinearLayout>
 </LinearLayout>

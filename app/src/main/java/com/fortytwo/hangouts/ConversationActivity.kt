@@ -12,27 +12,13 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
+import android.widget.Toolbar
 
-class ConversationActivity: AppCompatActivity() {
+class ConversationActivity: BaseActivity() {
     private lateinit var db: DatabaseHelper
     private lateinit var prefs: Prefs
     private lateinit var contact: Contact
     private lateinit var adapter: MessageAdapter
-
-    private val requestCallPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) {
-            placeCall()
-        } else {
-            Toast.makeText(this, R.string.call_permission_denied, Toast.LENGTH_SHORT).show()
-            openDialer()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +30,8 @@ class ConversationActivity: AppCompatActivity() {
         contact = db.getContact(contactId) ?: run { finish(); return }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        applyHeaderColor(toolbar, prefs.headerColor)
+        setActionBar(toolbar)
+        AppearanceUtils.applyHeaderColor(this, toolbar, prefs.headerColor)
         title = contact.displayName
 
         val listView = findViewById<ListView>(R.id.listMessages)
@@ -77,12 +63,22 @@ class ConversationActivity: AppCompatActivity() {
     }
 
     private fun onCallClicked() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
             placeCall()
         } else {
-            requestCallPermission.launch(Manifest.permission.CALL_PHONE)
+            requestPermissions(arrayOf(Manifest.permission.CALL_PHONE), REQUEST_CALL_PERMISSION)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != REQUEST_CALL_PERMISSION) return
+
+        if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
+            placeCall()
+        } else {
+            Toast.makeText(this, R.string.call_permission_denied, Toast.LENGTH_SHORT).show()
+            openDialer()
         }
     }
 
@@ -114,11 +110,15 @@ class ConversationActivity: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        applyHeaderColor(findViewById(R.id.toolbar), prefs.headerColor)
+        AppearanceUtils.applyHeaderColor(this, findViewById(R.id.toolbar), prefs.headerColor)
         refresh()
     }
 
     private fun refresh() {
         adapter.update(db.getMessages(contact.id))
+    }
+
+    companion object {
+        private const val REQUEST_CALL_PERMISSION = 1
     }
 }
