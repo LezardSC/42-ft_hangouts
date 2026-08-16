@@ -10,6 +10,7 @@
     <string name="delete">Supprimer</string>
     <string name="contact_photo">Photo du contact</string>
     <string name="edit_contact">Modifier le contact</string>
+    <string name="edit">Modifier</string>
     <string name="navigate_up">Retour</string>
 
     <string name="error_required_fields">Erreur, champs requis</string>
