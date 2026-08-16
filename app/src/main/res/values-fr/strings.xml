@@ -32,5 +32,11 @@
     <string name="language_english">English</string>
     <string name="language_french">Français</string>
 
+    <string name="theme">Thème</string>
+    <string name="choose_theme">Choisir le thème</string>
+    <string name="theme_system_default">Système par défaut</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+
     <string name="last_backgrounded">Dernier arrière-plan à %1$s</string>
 </resources>
