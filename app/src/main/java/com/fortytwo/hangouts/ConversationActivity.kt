@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.telephony.SmsManager
 import android.view.Menu
@@ -91,7 +92,12 @@ class ConversationActivity: BaseActivity() {
     }
 
     private fun sendMessage(body: String) {
-        val smsManager = SmsManager.getDefault()
+        val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            getSystemService(SmsManager::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            SmsManager.getDefault()
+        }
         val parts = smsManager.divideMessage(body)
         if (parts.size > 1) {
             smsManager.sendMultipartTextMessage(contact.phoneNumber, null, parts, null, null)
