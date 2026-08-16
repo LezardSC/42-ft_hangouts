@@ -2,11 +2,12 @@ package com.fortytwo.hangouts
 
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
 import androidx.core.os.LocaleListCompat
+import com.google.android.material.button.MaterialButton
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var prefs: Prefs
@@ -17,11 +18,16 @@ class SettingsActivity : AppCompatActivity() {
 
         prefs = Prefs(this)
 
-        findViewById<Button>(R.id.buttonHeaderColor).setOnClickListener {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { finish() }
+        applyHeaderColor(toolbar, prefs.headerColor)
+
+        findViewById<MaterialButton>(R.id.buttonHeaderColor).setOnClickListener {
             showColorPicker()
         }
 
-        findViewById<Button>(R.id.buttonLanguage).setOnClickListener {
+        findViewById<MaterialButton>(R.id.buttonLanguage).setOnClickListener {
             showLanguagePicker()
         }
     }
@@ -38,6 +44,7 @@ class SettingsActivity : AppCompatActivity() {
             .setTitle(R.string.choose_header_color)
             .setItems(names) { _, which ->
                 prefs.headerColor = colors.getValue(names[which])
+                applyHeaderColor(findViewById(R.id.toolbar), prefs.headerColor)
             }.show()
     }
 

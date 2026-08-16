@@ -25,7 +25,7 @@ class ContactAdapter(
         val contact = getItem(position)!!
         view.findViewById<TextView>(R.id.textName).text = contact.displayName
         view.findViewById<TextView>(R.id.textNumber).text = contact.phoneNumber
-        PhotoUtils.bindPhoto(view.findViewById<ImageView>(R.id.imagePhoto), contact.photoUri, THUMBNAIL_SIZE)
+        PhotoUtils.bindAvatar(view.findViewById<ImageView>(R.id.imagePhoto), contact.photoUri, contact.displayName, THUMBNAIL_SIZE)
 
         return view
     }

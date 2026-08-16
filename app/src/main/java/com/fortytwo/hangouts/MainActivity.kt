@@ -2,7 +2,6 @@ package com.fortytwo.hangouts
 
 import android.Manifest
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,6 +9,7 @@ import android.view.View
 import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var db: DatabaseHelper
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         db = DatabaseHelper(this)
         prefs = Prefs(this)
-        applyHeaderColor()
+        applyHeaderColor(findViewById<Toolbar>(R.id.toolbar), prefs.headerColor)
 
         val listView = findViewById<ListView>(R.id.listContacts)
         adapter = ContactAdapter(this, emptyList())
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         adapter.update(db.getAllContacts())
-        applyHeaderColor()
+        applyHeaderColor(findViewById<Toolbar>(R.id.toolbar), prefs.headerColor)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -80,10 +80,6 @@ class MainActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun applyHeaderColor() {
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(prefs.headerColor))
     }
 
     companion object {
