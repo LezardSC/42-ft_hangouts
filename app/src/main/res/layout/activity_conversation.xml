@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:layout_height="match_parent">
 
     <android.widget.Toolbar
         android:id="@+id/toolbar"
@@ -36,6 +35,8 @@
             android:paddingHorizontal="16dp"
             android:paddingVertical="10dp"
             android:hint="@string/type_a_message"
+            android:inputType="textShortMessage|textCapSentences|textMultiLine"
+            android:importantForAutofill="no"
             android:maxLines="4" />
 
         <Button

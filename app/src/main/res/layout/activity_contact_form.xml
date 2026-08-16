@@ -49,6 +49,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:labelFor="@id/inputFirstName"
                 android:text="@string/first_name"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
@@ -56,11 +57,14 @@
                 android:id="@+id/inputFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"
+                android:inputType="textPersonName"
+                android:autofillHints="personGivenName" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:labelFor="@id/inputLastName"
                 android:text="@string/last_name"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
@@ -68,11 +72,14 @@
                 android:id="@+id/inputLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"
+                android:inputType="textPersonName"
+                android:autofillHints="personFamilyName" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:labelFor="@id/inputPhone"
                 android:text="@string/phone"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
@@ -81,11 +88,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:inputType="phone" />
+                android:inputType="phone"
+                android:autofillHints="phone" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:labelFor="@id/inputEmail"
                 android:text="@string/email"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
@@ -94,11 +103,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:labelFor="@id/inputNote"
                 android:text="@string/note"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
@@ -106,7 +117,9 @@
                 android:id="@+id/inputNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp" />
+                android:layout_marginBottom="24dp"
+                android:inputType="textMultiLine|textCapSentences"
+                android:importantForAutofill="no" />
 
             <Button
                 android:id="@+id/buttonSave"
