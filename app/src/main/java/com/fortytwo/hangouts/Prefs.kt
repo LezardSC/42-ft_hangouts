@@ -2,7 +2,12 @@ package com.fortytwo.hangouts
 
 import android.content.Context
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatDelegate
+
+object ThemeMode {
+    const val FOLLOW_SYSTEM = 0
+    const val LIGHT = 1
+    const val DARK = 2
+}
 
 class Prefs(context: Context) {
     private val sp = context.getSharedPreferences("hangouts_prefs", Context.MODE_PRIVATE)
@@ -12,8 +17,13 @@ class Prefs(context: Context) {
         set(value) = sp.edit().putInt(KEY_HEADER_COLOR, value).apply()
 
     var themeMode: Int
-        get() = sp.getInt(KEY_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        get() = sp.getInt(KEY_THEME_MODE, ThemeMode.FOLLOW_SYSTEM)
         set(value) = sp.edit().putInt(KEY_THEME_MODE, value).apply()
+
+    /** BCP-47 language tag, e.g. "en" or "fr". Empty string means follow the system language. */
+    var languageTag: String
+        get() = sp.getString(KEY_LANGUAGE_TAG, "") ?: ""
+        set(value) = sp.edit().putString(KEY_LANGUAGE_TAG, value).apply()
 
     var lastBackgroundedAt: Long?
         get() = sp.getLong(KEY_LAST_BACKGROUNDED, -1L).takeIf { it != -1L }
@@ -22,6 +32,7 @@ class Prefs(context: Context) {
     companion object {
         private const val KEY_HEADER_COLOR = "header_color"
         private const val KEY_THEME_MODE = "theme_mode"
+        private const val KEY_LANGUAGE_TAG = "language_tag"
         private const val KEY_LAST_BACKGROUNDED = "last_backgrounded"
     }
 }

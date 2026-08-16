@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Ft_hangouts" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Ft_hangouts" parent="android:Theme.Material.Light.NoActionBar">
         <item name="colorPrimary">@color/md_light_primary</item>
         <item name="colorOnPrimary">@color/md_light_on_primary</item>
         <item name="colorPrimaryContainer">@color/md_light_primary_container</item>
@@ -20,6 +20,13 @@
         <item name="colorOnError">@color/md_light_on_error</item>
         <item name="colorErrorContainer">@color/md_light_error_container</item>
         <item name="colorOnErrorContainer">@color/md_light_on_error_container</item>
+
+        <!-- Keep native widgets (AlertDialog, Toolbar overflow icon, EditText) coherent with the palette above -->
+        <item name="android:colorPrimary">@color/md_light_primary</item>
+        <item name="android:colorAccent">@color/md_light_primary</item>
+        <item name="android:textColorPrimary">@color/md_light_on_surface</item>
+        <item name="android:textColorSecondary">@color/md_light_on_surface_variant</item>
+        <item name="android:windowBackground">@color/md_light_background</item>
     </style>
 
     <style name="Theme.Ft_hangouts" parent="Base.Theme.Ft_hangouts" />

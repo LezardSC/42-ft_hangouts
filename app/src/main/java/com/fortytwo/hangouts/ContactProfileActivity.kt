@@ -5,10 +5,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import android.widget.Toolbar
 
-class ContactProfileActivity : AppCompatActivity() {
+class ContactProfileActivity : BaseActivity() {
     private lateinit var db: DatabaseHelper
     private lateinit var prefs: Prefs
     private var contactId: Long = -1L
@@ -22,7 +21,7 @@ class ContactProfileActivity : AppCompatActivity() {
         contactId = intent.getLongExtra(MainActivity.EXTRA_CONTACT_ID, -1L)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
 
         findViewById<View>(R.id.buttonEdit).setOnClickListener {
@@ -37,7 +36,7 @@ class ContactProfileActivity : AppCompatActivity() {
         val contact = db.getContact(contactId) ?: run { finish(); return }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        applyHeaderColor(toolbar, prefs.headerColor)
+        AppearanceUtils.applyHeaderColor(this, toolbar, prefs.headerColor)
         title = contact.displayName
 
         findViewById<TextView>(R.id.textName).text = contact.displayName

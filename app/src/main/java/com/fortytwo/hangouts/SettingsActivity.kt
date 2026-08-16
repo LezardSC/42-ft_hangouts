@@ -1,15 +1,12 @@
 package com.fortytwo.hangouts
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
-import androidx.core.os.LocaleListCompat
-import com.google.android.material.button.MaterialButton
+import android.widget.Button
+import android.widget.Toolbar
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity() {
     private lateinit var prefs: Prefs
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,19 +16,19 @@ class SettingsActivity : AppCompatActivity() {
         prefs = Prefs(this)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
-        applyHeaderColor(toolbar, prefs.headerColor)
+        AppearanceUtils.applyHeaderColor(this, toolbar, prefs.headerColor)
 
-        findViewById<MaterialButton>(R.id.buttonHeaderColor).setOnClickListener {
+        findViewById<Button>(R.id.buttonHeaderColor).setOnClickListener {
             showColorPicker()
         }
 
-        findViewById<MaterialButton>(R.id.buttonLanguage).setOnClickListener {
+        findViewById<Button>(R.id.buttonLanguage).setOnClickListener {
             showLanguagePicker()
         }
 
-        findViewById<MaterialButton>(R.id.buttonTheme).setOnClickListener {
+        findViewById<Button>(R.id.buttonTheme).setOnClickListener {
             showThemePicker()
         }
     }
@@ -48,7 +45,7 @@ class SettingsActivity : AppCompatActivity() {
             .setTitle(R.string.choose_header_color)
             .setItems(names) { _, which ->
                 prefs.headerColor = colors.getValue(names[which])
-                applyHeaderColor(findViewById(R.id.toolbar), prefs.headerColor)
+                AppearanceUtils.applyHeaderColor(this, findViewById(R.id.toolbar), prefs.headerColor)
             }.show()
     }
 
@@ -59,28 +56,22 @@ class SettingsActivity : AppCompatActivity() {
             getString(R.string.language_french) to "fr"
         )
         val names = tags.keys.toTypedArray()
-        val currentTag = AppCompatDelegate.getApplicationLocales().toLanguageTags()
-        val currentIndex = tags.values.indexOfFirst { it == currentTag }.coerceAtLeast(0)
+        val currentIndex = tags.values.indexOfFirst { it == prefs.languageTag }.coerceAtLeast(0)
 
         AlertDialog.Builder(this)
             .setTitle(R.string.choose_language)
             .setSingleChoiceItems(names, currentIndex) { dialog, which ->
-                val tag = tags.getValue(names[which])
-                val locales = if (tag.isEmpty()) {
-                    LocaleListCompat.getEmptyLocaleList()
-                } else {
-                    LocaleListCompat.forLanguageTags(tag)
-                }
-                AppCompatDelegate.setApplicationLocales(locales)
+                prefs.languageTag = tags.getValue(names[which])
                 dialog.dismiss()
+                recreate()
             }.show()
     }
 
     private fun showThemePicker() {
         val modes = linkedMapOf(
-            getString(R.string.theme_system_default) to AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
-            getString(R.string.theme_light) to AppCompatDelegate.MODE_NIGHT_NO,
-            getString(R.string.theme_dark) to AppCompatDelegate.MODE_NIGHT_YES
+            getString(R.string.theme_system_default) to ThemeMode.FOLLOW_SYSTEM,
+            getString(R.string.theme_light) to ThemeMode.LIGHT,
+            getString(R.string.theme_dark) to ThemeMode.DARK
         )
         val names = modes.keys.toTypedArray()
         val currentIndex = modes.values.indexOfFirst { it == prefs.themeMode }.coerceAtLeast(0)
@@ -88,10 +79,9 @@ class SettingsActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(R.string.choose_theme)
             .setSingleChoiceItems(names, currentIndex) { dialog, which ->
-                val mode = modes.getValue(names[which])
-                prefs.themeMode = mode
-                AppCompatDelegate.setDefaultNightMode(mode)
+                prefs.themeMode = modes.getValue(names[which])
                 dialog.dismiss()
+                recreate()
             }.show()
     }
 }

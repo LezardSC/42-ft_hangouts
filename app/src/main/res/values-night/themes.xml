@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Ft_hangouts" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Ft_hangouts" parent="android:Theme.Material.NoActionBar">
         <item name="colorPrimary">@color/md_dark_primary</item>
         <item name="colorOnPrimary">@color/md_dark_on_primary</item>
         <item name="colorPrimaryContainer">@color/md_dark_primary_container</item>
@@ -20,5 +20,11 @@
         <item name="colorOnError">@color/md_dark_on_error</item>
         <item name="colorErrorContainer">@color/md_dark_error_container</item>
         <item name="colorOnErrorContainer">@color/md_dark_on_error_container</item>
+
+        <item name="android:colorPrimary">@color/md_dark_primary</item>
+        <item name="android:colorAccent">@color/md_dark_primary</item>
+        <item name="android:textColorPrimary">@color/md_dark_on_surface</item>
+        <item name="android:textColorSecondary">@color/md_dark_on_surface_variant</item>
+        <item name="android:windowBackground">@color/md_dark_background</item>
     </style>
 </resources>
