@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 
 class ConversationActivity: AppCompatActivity() {
     private lateinit var db: DatabaseHelper
+    private lateinit var prefs: Prefs
     private lateinit var contact: Contact
     private lateinit var adapter: MessageAdapter
 
@@ -38,10 +39,13 @@ class ConversationActivity: AppCompatActivity() {
         setContentView(R.layout.activity_conversation)
 
         db = DatabaseHelper(this)
+        prefs = Prefs(this)
         val contactId = intent.getLongExtra(MainActivity.EXTRA_CONTACT_ID, -1L)
         contact = db.getContact(contactId) ?: run { finish(); return }
 
-        setSupportActionBar(findViewById<Toolbar>(R.id.toolbar))
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        applyHeaderColor(toolbar, prefs.headerColor)
         title = contact.displayName
 
         val listView = findViewById<ListView>(R.id.listMessages)
@@ -110,6 +114,7 @@ class ConversationActivity: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        applyHeaderColor(findViewById(R.id.toolbar), prefs.headerColor)
         refresh()
     }
 

@@ -1,6 +1,8 @@
 package com.fortytwo.hangouts
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -8,9 +10,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
 class ContactFormActivity: AppCompatActivity() {
     private lateinit var db: DatabaseHelper
+    private lateinit var prefs: Prefs
     private var editingId: Long = -1L
     private var editingPhotoUri: String? = null
 
@@ -25,12 +29,27 @@ class ContactFormActivity: AppCompatActivity() {
         }
     }
 
+    private val nameWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            if (editingPhotoUri == null) bindPhoto()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contact_form)
         db = DatabaseHelper(this)
+        prefs = Prefs(this)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { finish() }
+        applyHeaderColor(toolbar, prefs.headerColor)
 
         editingId = intent.getLongExtra(MainActivity.EXTRA_CONTACT_ID, -1L)
+        title = if (editingId != -1L) getString(R.string.edit_contact) else getString(R.string.add_contact)
         if (editingId != -1L) {
             db.getContact(editingId)?.let {
                 fillForm(it)
@@ -40,6 +59,9 @@ class ContactFormActivity: AppCompatActivity() {
         }
         savedInstanceState?.getString(KEY_PHOTO_URI)?.let { editingPhotoUri = it }
         bindPhoto()
+
+        findViewById<EditText>(R.id.inputFirstName).addTextChangedListener(nameWatcher)
+        findViewById<EditText>(R.id.inputLastName).addTextChangedListener(nameWatcher)
 
         findViewById<View>(R.id.imageContactPhoto).setOnClickListener {
             pickPhoto.launch(arrayOf("image/*"))
@@ -54,7 +76,10 @@ class ContactFormActivity: AppCompatActivity() {
     }
 
     private fun bindPhoto() {
-        PhotoUtils.bindPhoto(findViewById<ImageView>(R.id.imageContactPhoto), editingPhotoUri, PHOTO_PREVIEW_SIZE)
+        val firstName = findViewById<EditText>(R.id.inputFirstName).text?.toString().orEmpty()
+        val lastName = findViewById<EditText>(R.id.inputLastName).text?.toString().orEmpty()
+        val displayName = "$firstName $lastName".trim()
+        PhotoUtils.bindAvatar(findViewById<ImageView>(R.id.imageContactPhoto), editingPhotoUri, displayName, PHOTO_PREVIEW_SIZE)
     }
 
     private fun fillForm(contact: Contact) {
