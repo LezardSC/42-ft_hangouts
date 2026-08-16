@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         listView.setOnItemLongClickListener { _, _, position, _ ->
             val contact = adapter.getItem(position) ?: return@setOnItemLongClickListener false
-            startActivity(Intent(this, ContactFormActivity::class.java).apply {
+            startActivity(Intent(this, ContactProfileActivity::class.java).apply {
                 putExtra(EXTRA_CONTACT_ID, contact.id)
             })
             true
