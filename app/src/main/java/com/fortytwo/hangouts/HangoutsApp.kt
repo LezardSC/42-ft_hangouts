@@ -3,6 +3,7 @@ package com.fortytwo.hangouts
 import android.app.Application
 import android.icu.text.DateFormat
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -14,6 +15,7 @@ class HangoutsApp : Application(), DefaultLifecycleObserver {
     override fun onCreate() {
         super<Application>.onCreate()
         prefs = Prefs(this)
+        AppCompatDelegate.setDefaultNightMode(prefs.themeMode)
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 

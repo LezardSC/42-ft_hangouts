@@ -30,6 +30,10 @@ class SettingsActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.buttonLanguage).setOnClickListener {
             showLanguagePicker()
         }
+
+        findViewById<MaterialButton>(R.id.buttonTheme).setOnClickListener {
+            showThemePicker()
+        }
     }
 
     private fun showColorPicker() {
@@ -68,6 +72,25 @@ class SettingsActivity : AppCompatActivity() {
                     LocaleListCompat.forLanguageTags(tag)
                 }
                 AppCompatDelegate.setApplicationLocales(locales)
+                dialog.dismiss()
+            }.show()
+    }
+
+    private fun showThemePicker() {
+        val modes = linkedMapOf(
+            getString(R.string.theme_system_default) to AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+            getString(R.string.theme_light) to AppCompatDelegate.MODE_NIGHT_NO,
+            getString(R.string.theme_dark) to AppCompatDelegate.MODE_NIGHT_YES
+        )
+        val names = modes.keys.toTypedArray()
+        val currentIndex = modes.values.indexOfFirst { it == prefs.themeMode }.coerceAtLeast(0)
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.choose_theme)
+            .setSingleChoiceItems(names, currentIndex) { dialog, which ->
+                val mode = modes.getValue(names[which])
+                prefs.themeMode = mode
+                AppCompatDelegate.setDefaultNightMode(mode)
                 dialog.dismiss()
             }.show()
     }
