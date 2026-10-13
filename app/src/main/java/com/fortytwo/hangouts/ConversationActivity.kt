@@ -1,6 +1,7 @@
 package com.fortytwo.hangouts
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -20,6 +21,7 @@ class ConversationActivity: BaseActivity() {
     private lateinit var prefs: Prefs
     private lateinit var contact: Contact
     private lateinit var adapter: MessageAdapter
+    private var smsReceiver: BroadcastReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,7 @@ class ConversationActivity: BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.conversation_menu, menu)
+        AppearanceUtils.applyHeaderColor(this, findViewById(R.id.toolbar), prefs.headerColor)
         return true
     }
 
@@ -118,6 +121,13 @@ class ConversationActivity: BaseActivity() {
         super.onResume()
         AppearanceUtils.applyHeaderColor(this, findViewById(R.id.toolbar), prefs.headerColor)
         refresh()
+        smsReceiver = SmsReceiver.registerForChanges(this) { refresh() }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        smsReceiver?.let { unregisterReceiver(it) }
+        smsReceiver = null
     }
 
     private fun refresh() {

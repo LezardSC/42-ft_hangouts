@@ -1,6 +1,7 @@
 package com.fortytwo.hangouts
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -13,6 +14,7 @@ class MainActivity : BaseActivity() {
     private lateinit var db: DatabaseHelper
     private lateinit var prefs: Prefs
     private lateinit var adapter: ContactAdapter
+    private var smsReceiver: BroadcastReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,10 +62,19 @@ class MainActivity : BaseActivity() {
         super.onResume()
         adapter.update(db.getAllContacts())
         AppearanceUtils.applyHeaderColor(this, findViewById<Toolbar>(R.id.toolbar), prefs.headerColor)
+        // An SMS from an unknown number creates a contact, so the list must follow
+        smsReceiver = SmsReceiver.registerForChanges(this) { adapter.update(db.getAllContacts()) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        smsReceiver?.let { unregisterReceiver(it) }
+        smsReceiver = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+        AppearanceUtils.applyHeaderColor(this, findViewById(R.id.toolbar), prefs.headerColor)
 
         return true
     }

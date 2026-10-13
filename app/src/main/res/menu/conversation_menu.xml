@@ -2,6 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/action_call"
         android:title="@string/call"
-        android:icon="@android:drawable/ic_menu_call"
+        android:icon="@drawable/ic_call"
         android:showAsAction="always" />
 </menu>
